@@ -1,0 +1,127 @@
+---
+title: "Data Science Capstone Project: Milestone Report"
+author: "Anderson R. S. dos Santos"
+date: "29 December 2015"
+output: html_document
+---
+
+```{r, echo=FALSE}
+library(DT)
+```
+
+Data Science Capstone Project: Milestone Report
+===============================================
+
+Author: Anderson R. S. dos Santos
+
+```{r, render=FALSE, echo=FALSE, warning=FALSE}
+source("data-analysis-capstone.R")
+```
+
+The goal of this project is to try to predict the next word in a sentence. In
+order to do that we are going to use an text corpus called HC Corpora 
+(www.corpora.heliohost.org). This corpus were collected from different sources: 
+blogs, newspapers, magazines and twitter posts.
+
+We are going to use some Natural Language Processing techniques to process the 
+corpus and extract the statistical knowledge necessary for the model. First, we
+are going to pre-process and clean the corpus.
+
+**What we have done so far:**
+
+1. Made some basic exploration around the corpus files
+1. Load a sub-sample of the corpus into R
+1. Transformations and cleaning process on the data:
+    1. Tokenize it into words 
+    1. Set all letters to lowercase 
+    1. Remove some profanity words 
+    1. Remove numbers 
+    1. Remove ponctuation 
+1. Exploring the frequencies of words
+
+## Basic Exploratory Analysis
+
+Let's explore some basic attributes of our corpora:
+
+```{r, cache=TRUE}
+filesStatList <- getGeneralTextStats("Data/final/en_US/en_US.*")
+```
+
+```{r, echo=FALSE, cache=FALSE}
+datatable(filesStatList, options = list(dom = 't'), rownames = FALSE)
+#library(knitr)
+#library(shiny)
+#kable(filesStatList)
+```
+
+Looking over the number of lines, words and the longest line of each file. It 
+seems that each row represents a text document. For data exploration purposes, 
+we are going to process a sub-sample (1%) from each of the files.
+
+## Pre-processing and cleaning
+
+1. **Sub-sample the data files.**
+1. **Remove punctuation and numbers:** For our task of predicting the next word, 
+numbers and ponctuation does not seems to improve results.
+1. **Set all letters to lowercase**
+1. **Profanity filtering:** Removing profanity words that we do not want to predict.
+1. **Tokenization:** Identifying appropriate tokens such as words, punctuation, 
+and numbers.
+
+## Deeper Exploratory Analysis
+
+### Term frequency
+
+```{r, cache=TRUE}
+## By default, will sample 1000 lines 
+blogCorpus <- getSampleCorpus('blogs',filesStatList)
+newsCorpus <- getSampleCorpus('news',filesStatList)
+twitterCorpus <- getSampleCorpus('twitter',filesStatList,linesToRead = 6000)
+
+## Do the preprocessing steps
+blogCorpus <- preProcessCorpus('blogs',corpusObj = blogCorpus)
+newsCorpus <- preProcessCorpus('news',corpusObj = newsCorpus)
+twitterCorpus <- preProcessCorpus('twitter',corpusObj = twitterCorpus,linesToRead = 6000)
+
+blogUnigramTDM <- TermDocumentMatrix(blogCorpus)
+newsUnigramTDM <- TermDocumentMatrix(newsCorpus)
+twitterUnigramTDM <- TermDocumentMatrix(twitterCorpus)
+```
+
+Let's explore the word frequencies in all three corpus: twitter, blogs and news. As can be seen in the plots bellow, there are few words with high frequency a the most
+words have lower frequency.
+
+```{r,echo=FALSE}
+blogUnigramTDM <- as.data.frame(as.matrix(blogUnigramTDM))
+blogUnigramFreq <- as.matrix(sort(sapply(blogUnigramTDM, "sum"), decreasing = TRUE)[1:length(blogUnigramTDM)], colnames = count)
+hist(blogUnigramFreq,col = 'red', breaks = 100, xlab = "Frequency", ylab = "Number of words", main = "Histogram of word frequencies in blog corpus")
+
+newsUnigramTDM <- as.data.frame(as.matrix(newsUnigramTDM))
+newsUnigramFreq <- as.matrix(sort(sapply(newsUnigramTDM, "sum"), decreasing = TRUE)[1:length(newsUnigramTDM)], colnames = count)
+hist(newsUnigramFreq,col = 'red', breaks = 100, xlab = "Frequency", ylab = "Number of words", main = "Histogram of word frequencies in news corpus")
+
+twitterUnigramTDM <- as.data.frame(as.matrix(twitterUnigramTDM))
+twitterUnigramFreq <- as.matrix(sort(sapply(twitterUnigramTDM, "sum"), decreasing = TRUE)[1:length(twitterUnigramTDM)], colnames = count)
+hist(twitterUnigramFreq,col = 'red', breaks = 30, xlab = "Frequency", ylab = "Number of words", main = "Histogram of word frequencies in twitter corpus")
+```
+
+## Next steps for the project
+
+Some needed definitions:
+**ngrams:** n-gram is a contiguous sequence of n words in a text.
+**ngram modeling:** ngram modeling is the task of extracting the probability of a given ngram (sequence of words) in a corpus. This is usefull for predicting the 
+probability of given word based on the last "n-1" words.
+
+1. In the cleaning process:
+    1. Identify and remove URLS
+    2. Change dots that means etc. to ", ". eg.:
+        * "local rapper Pashion...Copped her CD from her"
+        * "rest of world uses MARC21 or USMARC.. In France, we don't like"
+        * "Back to black hair Friday... Maybe"
+2. In the modeling process:
+    1. Create 2 and 3 ngram models
+    1. Create and test the first model of 3-gram
+    1. Test some other tools: backoff and smoothing (to treat unseen words or ngrams) ...
+    1. Evaluate and choose the best model
+3. Create the prediction function
+4. Create the shiny app
