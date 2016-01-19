@@ -89,7 +89,11 @@ setMethod(f="predictNextWord",
                   }
                   possibleTrigrams <- possibleTrigrams[,c("nextWord","probability")]
                   
-                  ## Calculating how much probability will be passed to the bigram counts
+                  ## Calculating how much probability will be passed to the 
+                  ## bigram counts
+                  
+                  ## We also pass all of the probability mass of the prunned 
+                  ## words (UNK words) to the lower ngram model.
                   if (sumOfCountOfPossibleTrigrams > 0) {
                       lambdaBigram <- nrow(possibleTrigrams) * discount / sumOfCountOfPossibleTrigrams  
                   } else {

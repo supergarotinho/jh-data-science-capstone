@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Johns Hopkins Data Science Capstone</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Johns Hopkins Data Science Capstone">
+  <meta name="author" content="Anderson Roberto Santos dos Santos">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Johns Hopkins Data Science Capstone</h1>
+    <h2>Predict Next Word</h2>
+    <p>Anderson Roberto Santos dos Santos<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Predict the next word</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>Author: Anderson Roberto Santos dos Santos</h3>
+
+<p>In this project, we developed a shiny application that predicts the next word. To to that, we created a model based on the frequency of the words alone (<strong>unigrams</strong>) and the frequency of the combination of 2 and 3 words, respectively: <strong>bigrams</strong> and <strong>trigrams.</strong></p>
+
+<h1>Steps done to create the model:</h1>
+
+<ol>
+<li>Download a corpus of text&#39;s from: twitter feeds; news and blogs. This corpus is called HC Corpora (<a href="http://www.corpora.heliohost.org">www.corpora.heliohost.org</a>).</li>
+<li>Sample a fraction of the corpus from each source: twitter, news and blogs.</li>
+<li>Pre-process and clean the corpus.</li>
+<li>Create the n-gram models</li>
+<li>Modify the n-gram models in order to reduce the memory usage and processing time to make the predictions</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Pré-processing steps:</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>We removed parts of the text that does not add any useful information for word prediction purposes. We removed:</p>
+
+<ul>
+<li>Ponctuations </li>
+<li>Numbers </li>
+<li>Profanity words (as we do not want to predict these ones) </li>
+<li>Transform all word to lower-case </li>
+<li>Remove extra white spaces </li>
+</ul>
+
+<h3>Why we don&#39;t:</h3>
+
+<ul>
+<li><strong>Removed url&#39;s:</strong> We have created a very good regex to remove them. But it has an unacceptable performance. 
+
+<ul>
+<li>We addressed this problem with a <strong>prunning</strong> method that will be showed in later slides. </li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>The prediction model</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Using the pre-processed corpus. We created three n-grams models: unigrams, bigrams and trigrams. <strong>To make predictions:</strong> We use the bigrams and trigrams with the Kneser-Ney smoothing algorithm (Kneser and Ney, 1995). 
+
+<ul>
+<li>This prediction smoothing method has a very poor performance because we need to calc all the distinct contexts (previews words) a word could have. To address this, we make this calc previously. Just after creating the ngrams models. </li>
+<li>Another problem of the Kneser-Ney is that it consider the unigram model as a uniform distribution. So all words in the unigram model will have the same probability of occurring. This is not useful for our purposes. So, we use the trigrams and bigrams with the kneser-ney smoothing formula. If we don&#39;t find the previews context in this two models, we show the 5 most common words to the user in the unigram model.</li>
+</ul></li>
+<li><strong>Prunning:</strong> As showed by Chen and Goodman (1998), we can remove the words or combinations of words (ngrams) that occur once without losing accuracy of the model in terms of perplexity. So we have cutted all bigrams and trigrams that occurs only once in the sample corpus. Resulting in more than 70% of memory save.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>The app, final words and future works</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><a href="http://shiny-apps">The app</a>: Just input some text and the app will show the five most probable words.</li>
+<li>The <a href="https://github.com/supergarotinho/jh-data-science-capstone">git-hub</a> repository with the app code; the modelling code and this presentation code.</li>
+</ul>
+
+<h3>Future works</h3>
+
+<p>Unfortunatelly, R is not the best place to create and use such language models. We made it from scratch for didatic purposes. We recomend to use one of the following best toolkits: <a href="https://code.google.com/p/berkeleylm/">berkeleylm</a>; <a href="http://www-speech.sri.com/projects/srilm/">SRILM</a> or <a href="https://kheafield.com/code/kenlm/">KenLM</a>. They have several performance improvements, such as: using numbers to represent words instead of strings, with more frequent words represented by smaller numbers; Quatize n-gram probabilities and sve in 4-8 bits instead of saving in a double format. Store n-grams in reverse <a href="https://en.wikipedia.org/wiki/Trie">tries</a>; ....</p>
+
+<h3>Bibliography used in this presentation</h3>
+
+<p>Kneser, R. and Ney, H. (1995). Improved backing-off for
+M-gram language modeling. </p>
+
+<p>Chen, S. F. and Goodman, J. (1998). An empirical study of
+smoothing techniques for language modeling.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Predict the next word'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Pré-processing steps:'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='The prediction model'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='The app, final words and future works'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
