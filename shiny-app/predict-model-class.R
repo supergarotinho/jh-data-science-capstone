@@ -8,6 +8,7 @@ NextWordModel <- setClass(
     
     # Define the slots
     slots = c(
+        unigramModel = "data.frame",
         bigramModel = "data.frame",
         sumOfBigramsCountsBeforeCutoff = "numeric",
         trigramModel = "data.frame",
@@ -17,6 +18,7 @@ NextWordModel <- setClass(
     
     # Set the default values for the slots. (optional)
     prototype=list(
+        unigramModel = NULL,
         bigramModel  = NULL,
         sumOfBigramsCountsBeforeCutoff = 0,
         trigramModel = NULL,
@@ -36,7 +38,7 @@ NextWordModel <- setClass(
     }
 )
 
-NextWordModel = function(bigramModel, 
+NextWordModel = function(unigramModel, bigramModel, 
                          trigramModel, profaneWords = NULL, ...) {
     
     # Pre-load the profane words for the model
@@ -46,8 +48,12 @@ NextWordModel = function(bigramModel,
         close(con)
     }
     
+    ## Gets only the most frequent unigrams
+    unigramModel <- unigramModel[order(-unigramModel[,"count"]),]
+    unigramModel <- unigramModel[1:10,]
+    
     ## Creates the class
-    modelObj = new("NextWordModel",bigramModel=bigramModel$model,
+    modelObj = new("NextWordModel",unigramModel=unigramModel,bigramModel=bigramModel$model,
                    sumOfBigramsCountsBeforeCutoff=bigramModel$sumOfCountsBeforeCutoff,
                    trigramModel=trigramModel$model,
                    sumOfTrigramsCountsBeforeCutoff = trigramModel$sumOfCountsBeforeCutoff,

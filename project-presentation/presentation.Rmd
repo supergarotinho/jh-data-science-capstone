@@ -3,35 +3,34 @@ title       : Johns Hopkins Data Science Capstone
 subtitle    : Predict Next Word
 author      : Anderson Roberto Santos dos Santos
 job         : 
-framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
-highlighter : highlight.js  # {highlight.js, prettify, highlight}
-hitheme     : tomorrow      # 
-widgets     : []            # {mathjax, quiz, bootstrap}
-mode        : selfcontained # {standalone, draft}
-knit        : slidify::knit2slides
+framework : io2012 # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js # {highlight.js, prettify, highlight}
+hitheme : tomorrow #
+widgets : [] # {mathjax, quiz, bootstrap}
+mode : standalone # {selfcontained,standalone, draft}
 ---
 
-## Predict the next word
+## Predict the next word 
 
-### Author: Anderson Roberto Santos dos Santos
+### Author: Anderson Roberto Santos dos Santos 
   
-In this project, we developed a shiny application that predicts the next word. To to that, we created a model based on the frequency of the words alone (**unigrams**) and the frequency of the combination of 2 and 3 words, respectively: **bigrams** and **trigrams.**
+In this project, we developed a shiny application that predicts the next word. To to that, we created a model based on the frequency of the words alone (**unigrams**) and the frequency of the combination of 2 and 3 words, respectively: **bigrams** and **trigrams.** 
 
-# Steps done to create the model:
+# Steps done to create the model: 
 
-1. Download a corpus of text's from: twitter feeds; news and blogs. This corpus is called HC Corpora (www.corpora.heliohost.org).
-2. Sample a fraction of the corpus from each source: twitter, news and blogs.
-3. Pre-process and clean the corpus.
-4. Create the n-gram models
-5. Modify the n-gram models in order to reduce the memory usage and processing time to make the predictions
+1. Download a corpus of text's from: twitter feeds; news and blogs. This corpus is called HC Corpora (www.corpora.heliohost.org). 
+2. Sample a fraction of the corpus from each source: twitter, news and blogs. 
+3. Pre-process and clean the corpus. 
+4. Create the n-gram models 
+5. Modify the n-gram models in order to reduce the memory usage and processing time to make the predictions 
 
 --- .class #id 
 
-## Pré-processing steps:
+## Pré-processing steps: 
 
-We removed parts of the text that does not add any useful information for word prediction purposes. We removed:
+We removed parts of the text that does not add any useful information for word prediction purposes. We removed: 
 
-* Ponctuations 
+* Ponctuations  
 * Numbers 
 * Profanity words (as we do not want to predict these ones) 
 * Transform all word to lower-case 
@@ -57,16 +56,14 @@ We removed parts of the text that does not add any useful information for word p
 ## The app, final words and future works
 
 * [The app](http://shiny-apps): Just input some text and the app will show the five most probable words.
-* The [git-hub](https://github.com/supergarotinho/jh-data-science-capstone) repository with the app code; the modelling code and this presentation code.
+* The [git-hub](https://github.com/supergarotinho/jh-data-science-capstone) repository with the app code; the modelling code and this presentation code. 
 
 ### Future works
 
-Unfortunatelly, R is not the best place to create and use such language models. We made it from scratch for didatic purposes. We recomend to use one of the following best toolkits: [berkeleylm](https://code.google.com/p/berkeleylm/); [SRILM](http://www-speech.sri.com/projects/srilm/) or [KenLM](https://kheafield.com/code/kenlm/). They have several performance improvements, such as: using numbers to represent words instead of strings, with more frequent words represented by smaller numbers; Quatize n-gram probabilities and sve in 4-8 bits instead of saving in a double format. Store n-grams in reverse [tries](https://en.wikipedia.org/wiki/Trie); ....
+Unfortunatelly, R is not the best place to create and use such language models. We made it from scratch for didatic purposes. We recomend to use one of the following best toolkits: [berkeleylm](https://code.google.com/p/berkeleylm/); [SRILM](http://www-speech.sri.com/projects/srilm/) or [KenLM](https://kheafield.com/code/kenlm/). They have several performance improvements, such as: using numbers to represent words instead of strings, with more frequent words represented by smaller numbers; Quatize n-gram probabilities and sve in 4-8 bits instead of saving in a double format. Store n-grams in reverse [tries](https://en.wikipedia.org/wiki/Trie); .... 
 
-### Bibliography used in this presentation
+### Bibliography used in this presentation 
 
-Kneser, R. and Ney, H. (1995). Improved backing-off for
-M-gram language modeling. 
+Kneser, R. and Ney, H. (1995). Improved backing-off for M-gram language modeling. 
 
-Chen, S. F. and Goodman, J. (1998). An empirical study of
-smoothing techniques for language modeling.
+Chen, S. F. and Goodman, J. (1998). An empirical study of smoothing techniques for language modeling. 

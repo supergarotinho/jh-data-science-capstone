@@ -57,7 +57,7 @@ getSampleCorpus <- function(corpusName,filesStatList,linesToRead = 1000,
         corpusFileName <- paste("Data/1-SampleCorpus/en_US/en_US.",sampleSize*100,
                                 ".",corpusName,".rds", sep = "")
     } else {
-        sampleFileName <- paste(initialDataDir,"/1-Sample/en_US/en_US.",linesToRead,
+        sampleFileName <- paste(initialDqataDir,"/1-Sample/en_US/en_US.",linesToRead,
                                 ".",corpusName,".txt", sep = "")
         corpusFileName <- paste("Data/1-SampleCorpus/en_US/en_US.",linesToRead,
                                 ".",corpusName,".rds", sep = "")
@@ -270,11 +270,11 @@ makeCompleteNgramModels <- function(sampleSize, useCache = TRUE) {
     
     ## Making n-grams
     ## Unigrams wont be necessary for the model
-    #print("Making unigrams count...")
-    #times <- c(times,sum(system.time(
-    #    unigramModel <- processNGram('all', ngramValue = 1,corpusObj = allCorpus, 
-    #                                 sampleSize = sampleSize, useCache = useCache)
-    #            )[c(1,4)]))
+    print("Making unigrams count...")
+    times <- c(times,sum(system.time(
+        unigramModel <- processNGram('all', ngramValue = 1,corpusObj = allCorpus, 
+                                     sampleSize = sampleSize, useCache = useCache)
+                )[c(1,4)]))
     print("Making bigrams count...")
     times <- c(times,sum(system.time(
         bigramModel <- processNGram('all', ngramValue = 2,corpusObj = allCorpus, 
@@ -295,6 +295,7 @@ makeCompleteNgramModels <- function(sampleSize, useCache = TRUE) {
     )[c(1,4)]))
 
     timesDesc <- c("Generating Text Stats","Sampling Files","Pre-Process Corpus",
+                   "Generate unigrams",
                    "Generate bigrams",
                    "Generate trigrams",
                    "Generate KN Continuation Count for bigrams")
