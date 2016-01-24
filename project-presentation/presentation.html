@@ -98,11 +98,11 @@
   </hgroup>
   <article data-timings="">
     <ul>
-<li>Using the pre-processed corpus. We created three n-grams models: unigrams, bigrams and trigrams. <strong>To make predictions:</strong> We use the bigrams and trigrams with the Kneser-Ney smoothing algorithm (Kneser and Ney, 1995). 
+<li>Using the pre-processed corpus. We created three n-grams models: unigrams, bigrams and trigrams. <strong>To make predictions:</strong> We used the bigrams and trigrams with the Kneser-Ney smoothing algorithm (Kneser and Ney, 1995). 
 
 <ul>
 <li>This prediction smoothing method has a very poor performance because we need to calc all the distinct contexts (previews words) a word could have. To address this, we make this calc previously. Just after creating the ngrams models. </li>
-<li>Another problem of the Kneser-Ney is that it consider the unigram model as a uniform distribution. So all words in the unigram model will have the same probability of occurring. This is not useful for our purposes. So, we use the trigrams and bigrams with the kneser-ney smoothing formula. If we don&#39;t find the previews context in this two models, we show the 5 most common words to the user in the unigram model.</li>
+<li>Another problem of the Kneser-Ney is that it consider the unigram model as a uniform distribution. So all words in the unigram model will have the same probability of occurring. This is not useful for our purposes. So, we use the trigrams and bigrams with the kneser-ney smoothing formula. If we don&#39;t find the previews contexts in this two models, we show the 5 most common words to the user in the unigram model.</li>
 </ul></li>
 <li><strong>Prunning:</strong> As showed by Chen and Goodman (1998), we can remove the words or combinations of words (ngrams) that occur once without losing accuracy of the model in terms of perplexity. So we have cutted all bigrams and trigrams that occurs only once in the sample corpus. Resulting in more than 70% of memory save.</li>
 </ul>
@@ -117,13 +117,13 @@
   </hgroup>
   <article data-timings="">
     <ul>
-<li><a href="http://shiny-apps">The app</a>: Just input some text and the app will show the five most probable words.</li>
+<li><a href="https://arssantos.shinyapps.io/jh-data-science-capstone/">The app</a>: Just input some text and the app will show the five most probable words.</li>
 <li>The <a href="https://github.com/supergarotinho/jh-data-science-capstone">git-hub</a> repository with the app code; the modelling code and this presentation code. </li>
 </ul>
 
 <h3>Future works</h3>
 
-<p>Unfortunatelly, R is not the best place to create and use such language models. We made it from scratch for didatic purposes. We recomend to use one of the following best toolkits: <a href="https://code.google.com/p/berkeleylm/">berkeleylm</a>; <a href="http://www-speech.sri.com/projects/srilm/">SRILM</a> or <a href="https://kheafield.com/code/kenlm/">KenLM</a>. They have several performance improvements, such as: using numbers to represent words instead of strings, with more frequent words represented by smaller numbers; Quatize n-gram probabilities and sve in 4-8 bits instead of saving in a double format. Store n-grams in reverse <a href="https://en.wikipedia.org/wiki/Trie">tries</a>; .... </p>
+<p>Unfortunatelly, R is not the best place to create and use such language models. We made it from scratch for didatic purposes. We recomend to use one of the following best toolkits: <a href="https://code.google.com/p/berkeleylm/">berkeleylm</a>; <a href="http://www-speech.sri.com/projects/srilm/">SRILM</a> or <a href="https://kheafield.com/code/kenlm/">KenLM</a>. They have several performance improvements, such as: using numbers to represent words instead of strings, with more frequent words represented by smaller numbers; Quatize n-gram probabilities and save in 4-8 bits instead of saving in a double format. Store n-grams in reverse <a href="https://en.wikipedia.org/wiki/Trie">tries</a>; .... </p>
 
 <h3>Bibliography used in this presentation</h3>
 

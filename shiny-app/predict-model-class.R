@@ -11,8 +11,10 @@ NextWordModel <- setClass(
         unigramModel = "data.frame",
         bigramModel = "data.frame",
         sumOfBigramsCountsBeforeCutoff = "numeric",
+        sumOfBigramsCountAfterCutoff = "numeric",
         trigramModel = "data.frame",
         sumOfTrigramsCountsBeforeCutoff = "numeric",
+        sumOfTrigramsCountAfterCutoff = "numeric",
         profaneWords = "character"
     ),
     
@@ -21,8 +23,10 @@ NextWordModel <- setClass(
         unigramModel = NULL,
         bigramModel  = NULL,
         sumOfBigramsCountsBeforeCutoff = 0,
+        sumOfBigramsCountAfterCutoff = 0,
         trigramModel = NULL,
         sumOfTrigramsCountsBeforeCutoff = 0,
+        sumOfTrigramsCountAfterCutoff = 0,
         profaneWords = NULL,
         discount = 0.75
     ),
@@ -52,11 +56,17 @@ NextWordModel = function(unigramModel, bigramModel,
     unigramModel <- unigramModel[order(-unigramModel[,"count"]),]
     unigramModel <- unigramModel[1:10,]
     
+    ## Gets the sum of trigrams and bigrams
+    sumOfBigramsCountAfterCutoff <- sum(trigramModel$model$count)
+    sumOfTrigramsCountAfterCutoff <- sum(bigramModel$model$count)
+    
     ## Creates the class
     modelObj = new("NextWordModel",unigramModel=unigramModel,bigramModel=bigramModel$model,
                    sumOfBigramsCountsBeforeCutoff=bigramModel$sumOfCountsBeforeCutoff,
+                   sumOfBigramsCountAfterCutoff=sumOfBigramsCountAfterCutoff,
                    trigramModel=trigramModel$model,
                    sumOfTrigramsCountsBeforeCutoff = trigramModel$sumOfCountsBeforeCutoff,
+                   sumOfTrigramsCountAfterCutoff=sumOfTrigramsCountAfterCutoff,
                    profaneWords=profaneWords, ...)
     
     return (modelObj)
@@ -98,8 +108,13 @@ setMethod(f="predictNextWord",
                   ## Calculating how much probability will be passed to the 
                   ## bigram counts
                   
-                  ## We also pass all of the probability mass of the prunned 
-                  ## words (UNK words) to the lower ngram model.
+                  ## We dont pass all of the probability mass of the prunned 
+                  ## words (UNK words) to the lower ngram model because it increments a lot the memory requirements
+                  
+                  ### unkWordsMass <- theObject@sumOfTrigramsCountsBeforeCutoff - theObject@sumOfTrigramsCountAfterCutoff
+                  ###  lambdaBigram <- (nrow(possibleTrigrams) * discount) + unkWordsMass / theObject@sumOfTrigramsCountsBeforeCutoff  
+                  
+                  ## Instead, we did a simpler aprroach
                   if (sumOfCountOfPossibleTrigrams > 0) {
                       lambdaBigram <- nrow(possibleTrigrams) * discount / sumOfCountOfPossibleTrigrams  
                   } else {
@@ -132,11 +147,12 @@ setMethod(f="predictNextWord",
                       names(finalResult) <- c("nextWord","probability")
                       finalResult <- finalResult[order(-finalResult[,"probability"]),]
                   } else {
-                      return()
+                      ## Unigrams can be used here
+                      return(head(theObject@unigramModel$gram,5))
                   }
               } else {
                   ## Unigrams could be used here
-                  return()
+                  return(head(theObject@unigramModel$gram,5))
               } 
 
               return(head(finalResult$nextWord,numberOfWords))

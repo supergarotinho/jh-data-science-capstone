@@ -1,6 +1,8 @@
 library(shiny)
+library(tm)
+library(RWeka)
 source("predict-model-class.R")
-sampleSize <- 0.01
+sampleSize <- 0.05
 knnModel <- readRDS(file = paste0("data/final-model-",sampleSize,".rds"))
 
 ## Executes when load to server

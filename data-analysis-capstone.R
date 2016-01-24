@@ -231,7 +231,7 @@ processNGramKNN <- function(corpusName, ngramValue = 3, ngramModel = NULL,
     }
     
 	
-    if (!file.exists(ngramKnnFileName)) {
+    if ((file.exists(ngramKnnFileName) == FALSE) || (useCache == FALSE)) {
         dir.create("Data/4-KN_Model/en_US", showWarnings = FALSE, recursive = TRUE)
         
         ngramNextWords <- unique(ngramModel$model$nextWord)
